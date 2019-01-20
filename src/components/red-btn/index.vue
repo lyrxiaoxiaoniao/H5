@@ -1,5 +1,5 @@
 <template>
-  <div class='redbtn'>{{context}}</div>
+  <div class='redbtn'> {{context}}</div>
 </template>
 
 <script>
@@ -16,16 +16,16 @@ export default {
 
 <style lang="less" scoped>
 .redbtn {
-  width: 262px;
-  height: 52px;
+  width: 220px;
+  height: 44px;
   background-color: rgba(255, 57, 57, 0.3);
   border: 2px solid #FEF5D4;
-  border-radius: 52px;
+  border-radius: 54px;
   text-align: center;
-  line-height: 48px;
+  line-height: 40px;
   box-sizing: border-box;
   color: #fff;
-  font-size: 26px;
+  font-size: 20px;
   letter-spacing: 4px;
 }
 </style>

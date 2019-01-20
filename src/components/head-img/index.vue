@@ -11,7 +11,6 @@ export default {};
 
 <style lang="less" scoped>
 .headimg {
-  width: 70px;
   width: 60px;
   position: relative;
   display: flex;

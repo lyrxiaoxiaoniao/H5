@@ -1,4 +1,4 @@
-import axios from '../interceptor.js'
+import axios from './interceptor.js'
 import config from '../config'
 
 export default {

@@ -4,8 +4,14 @@ import router from './router'
 import store from './store'
 import './utils/rem'
 import './assets/css/base.less'
+import './assets/css/scrollbar.less'
+import api from './utils/api'
+// import $wx from './utils/wx'
+import storage from './utils/storage'
 
 Vue.config.productionTip = false
+Vue.prototype.$api = api
+Vue.prototype.storage = storage._Storage
 
 new Vue({
   router,
