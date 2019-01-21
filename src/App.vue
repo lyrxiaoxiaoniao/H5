@@ -47,10 +47,10 @@ export default {
       // https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx69ba7122e8e8d795&redirect_uri=https://www.jpark.vip/&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect
       // 非静默授权，第一次有弹框
       // https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx22d606a0b9f52f4f&redirect_uri=https://www.jpark.vip/&response_type=code&scope=snsapi_base&state=123#wechat_redirect
-      const code = '001i9Xy00OLBIG1VVNu004tZy00i9XyS' // 截取路径中的code，如果没有就去微信授权，如果已经获取到了就直接传code给后台获取openId
-      const local = 'https://www.jpark.vip/lucky/redpack/'
-      // const code = this.getQueryStringCode('code') || ''
-      // const local = window.location.href
+      // const code = '001i9Xy00OLBIG1VVNu004tZy00i9XyS' // 截取路径中的code，如果没有就去微信授权，如果已经获取到了就直接传code给后台获取openId
+      // const local = 'https://www.jpark.vip/lucky/redpack/'
+      const code = this.getQueryStringCode('code') || ''
+      const local = window.location.href
       const Appid = this.storage.get('appid') || ''
       if (code == null || code === '') {
         window.location.href =
@@ -67,10 +67,10 @@ export default {
       // https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa778594700344a8f&redirect_uri=https://www.jpark.vip/&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect
       // 非静默授权，第一次有弹框
       // https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx22d606a0b9f52f4f&redirect_uri=https://www.jpark.vip/&response_type=code&scope=snsapi_base&state=123#wechat_redirect
-      const code = '0012Bv7k0oWeyq1caG7k0hHw7k02Bv7r' // 截取路径中的code，如果没有就去微信授权，如果已经获取到了就直接传code给后台获取openId
-      const local = 'https://www.jpark.vip/'
-      // const code = this.getQueryStringCode('code') || ''
-      // const local = window.location.href
+      // const code = '0012Bv7k0oWeyq1caG7k0hHw7k02Bv7r' // 截取路径中的code，如果没有就去微信授权，如果已经获取到了就直接传code给后台获取openId
+      // const local = 'https://www.jpark.vip/'
+      const code = this.getQueryStringCode('code') || ''
+      const local = window.location.href
       const Appid = this.storage.get('Jparkappid') || ''
       if (code == null || code === '') {
         window.location.href =
@@ -102,8 +102,8 @@ export default {
       this.$api
         .get(config.getUnionId, {
           js_code: code,
-          url: 'https://www.jpark.vip/lucky/redpack'
-          // url: window.location.href.split('#')[0]
+          // url: 'https://www.jpark.vip/lucky/redpack'
+          url: window.location.href.split('#')[0]
         })
         .then(res => {
           console.log(res, 'unionid')
