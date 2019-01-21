@@ -6,10 +6,11 @@
       <div class="content">
         <div class="money">
           <p>红包拆得</p>
-          <p class="money-red">￥28.88</p>
+          <p class="money-red">￥{{resData.amount}}</p>
         </div>
-        <head-img class="head-img"></head-img>
-        <red-btn class="red-btn" @click.native="onClick" context="查看我的愿望"></red-btn>
+        <head-img :img="userinfo.headimgurl" :nickname="userinfo.nickname" class="head-img"></head-img>
+        <div class="red-text">{{resData.bless}}</div>
+        <red-btn class="red-btn" @click.native="onClick" context="我也要许愿"></red-btn>
       </div>
     </div>
     <img class="home-bg" src="../assets/bg/bg22.png" alt>
@@ -20,33 +21,66 @@
 </template>
 
 <script>
-import leftControl from "@c/left-control";
-import redBtn from "@c/red-btn";
-import headImg from "@c/head-img";
-import textList from "@c/text-list";
-import dialogGuize from "@c/dialog";
-import dialogRank from "@c/dialog-rank";
+import leftControl from '@c/left-control'
+import redBtn from '@c/red-btn'
+import headImg from '@c/head-img'
+import dialogGuize from '@c/dialog'
+import dialogRank from '@c/dialog-rank'
+import config from '../utils/config'
 export default {
   components: { leftControl, redBtn, headImg, dialogGuize, dialogRank },
   data() {
     return {
+      query: this.$route.query,
+      userinfo: this.storage.get('userinfo'),
+      resData: {},
       show: false,
       rankshow: false
-    };
+    }
   },
   mounted() {
-    console.log(document.body.offsetHeight);
+    console.log(this.query)
+    this.getRedPacket()
   },
   methods: {
-    onClick() {},
-    toWeChat() {
-      this.$router.push("search");
+    getRedPacket() {
+      const { unionid, sendUnionid, openid, wishId } = this.query
+      const userinfo = this.storage.get('userinfo')
+      const obj = {
+        unionid,
+        sendUnionid,
+        wishId,
+        openid,
+        headportraitUrl: userinfo.headimgurl,
+        region: userinfo.country + userinfo.province + userinfo.city,
+        nickname: userinfo.nickname,
+        sex: userinfo.sex
+      }
+      this.$api.get(config.getOtherSendRedPacket, { ...obj }).then(res => {
+        if (res.status === 'success') {
+          this.resData = res.data
+        }
+      })
     },
-    clickon() {
-      console.log(12312312);
+    onClick() {
+      console.log('cehsi')
+      this.$router.push({
+        path: '/form1'
+      })
+    },
+    toWeChat() {
+      this.$router.push('search')
+    },
+    clickon(e) {
+      console.log(e, 12312312)
+      if (e === 1) {
+        this.rankshow = true
+      } else if (e === 2) {
+        this.show = true
+      }
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -55,7 +89,7 @@ export default {
   height: 100%;
   width: 100%;
   overflow: auto;
-  background: url("../assets/bg/bg-lline.png") repeat center;
+  background: url('../assets/bg/bg-lline.png') repeat center;
   //   background: url("../assets/bg/bg-line4.png") repeat center;
   background-size: 100%;
   &-header {
@@ -96,8 +130,13 @@ export default {
       .head-img {
         margin-top: 10px;
       }
+      .red-text {
+        margin-top: 10px;
+        font-size: 22px;
+        color: #ffad4d;
+      }
       .red-btn {
-        margin-top: 50px;
+        margin-top: 30px;
       }
     }
   }
@@ -110,7 +149,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 100px;
-    background: url("../assets/bg/footer.gif") repeat center;
+    background: url('../assets/bg/footer.gif') repeat center;
     background-size: 100% 100%;
   }
 }

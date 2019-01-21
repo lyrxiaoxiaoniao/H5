@@ -1,5 +1,5 @@
 import axios from './interceptor.js'
-import config from '../config'
+// import config from '../config'
 
 export default {
   get(uri, data = null) {
@@ -7,8 +7,14 @@ export default {
       console.log('API function call requires uri argument')
       return
     }
-    return axios.get(uri, {
-      params: data
+    return new Promise((resolve, reject) => {
+      axios.get(uri, {
+        params: data
+      }).then(res => {
+        resolve(res.data)
+      }).catch(err => {
+        reject(err)
+      })
     })
   },
   post(uri, data = null) {
@@ -16,6 +22,12 @@ export default {
       console.log('API function call requires uri argument')
       return
     }
-    return axios.post(uri, data)
+    return new Promise((resolve, reject) => {
+      axios.post(uri, data).then(res => {
+        resolve(res.data)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }

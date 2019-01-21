@@ -14,6 +14,7 @@ module.exports = {
     'quotes': 0,
     'indent': 0,
     'space-before-function-paren': 'off',
+    'camelcase': 'off',
     'no-multiple-empty-lines': 0
   },
   parserOptions: {

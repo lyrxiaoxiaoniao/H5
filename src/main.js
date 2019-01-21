@@ -8,6 +8,8 @@ import './assets/css/scrollbar.less'
 import api from './utils/api'
 // import $wx from './utils/wx'
 import storage from './utils/storage'
+import toast from 'vue-mini-toast'
+Vue.use(toast)
 
 Vue.config.productionTip = false
 Vue.prototype.$api = api

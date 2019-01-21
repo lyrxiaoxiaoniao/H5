@@ -4,55 +4,118 @@
     <left-control @onClick="clickon" class="leftcrol" ></left-control>
     <div class="home-container">
       <div class="content">
-        <head-img class="head-img"></head-img>
+        <head-img :img="userinfo.headimgurl" :nickname="userinfo.nickname" class="head-img"></head-img>
         <input @focus="onFocus" class="select" type="text" placeholder="请选择你的愿望">
-        <text-list class="text-list" close></text-list>
+        <text-list :list="wishList" @onClose="ondelWish" class="text-list" close></text-list>
       </div>
     </div>
     <div @click="onShare" class="red-btn">转发集福送红包</div>
     <img class="home-bg" src="../assets/bg/bg4.png" alt>
     <div class="home-footer"></div>
     <dialog-guize :show.sync="show"></dialog-guize>
-    <dialog-rank :visiable.sync="visiable"></dialog-rank>
+    <dialog-rank :visiable.sync="rankshow"></dialog-rank>
     <share :shareshow.sync="shareshow"></share>
   </div>
 </template>
 
 <script>
-import leftControl from "@c/left-control";
-import headImg from "@c/head-img";
-import textList from "@c/text-list";
-import dialogGuize from "@c/dialog";
-import dialogRank from "@c/dialog-rank";
-import share from "@c/share";
+import leftControl from '@c/left-control'
+import headImg from '@c/head-img'
+import textList from '@c/text-list'
+import dialogGuize from '@c/dialog'
+import dialogRank from '@c/dialog-rank'
+import share from '@c/share'
+import config from '../utils/config/index'
+import $wx from '../utils/wx'
 export default {
-  components: { leftControl, headImg, textList, dialogGuize, dialogRank, share },
+  components: {
+    leftControl,
+    headImg,
+    textList,
+    dialogGuize,
+    dialogRank,
+    share
+  },
   data() {
     return {
+      isSelect: this.$route.query.isSelect || false,
+      userinfo: this.storage.get('userinfo') || {},
       shareshow: false,
       show: false,
-      visiable: false
-    };
+      rankshow: false,
+      wishList: []
+    }
   },
   mounted() {
-    console.log(document.body.offsetHeight);
+    // console.log(document.body.offsetHeight);
+    if (this.isSelect) {
+      this.wishList = this.$route.query.list
+      return
+    }
+    this.getWishList()
   },
   methods: {
+    getWishList() {
+      this.$api.get(config.getAllWishConfig).then(res => {
+        if (res.status === 'success') {
+          this.wishList = res.data.map((v, i) => {
+            if (i <= 3) {
+              return v.wish
+            }
+          })
+          const shareUrl = `${
+            location.origin
+          }/#/?sendUnionid=${this.storage.get('unionId')}&userinfo=${
+            JSON.stringify(this.userinfo)
+          }&wishList=${this.wishList}`
+          $wx.shareFriend(
+            '锦鲤活动标题',
+            '锦鲤活动描述',
+            shareUrl,
+            `${window.location.href.split('#')[0]}/share.jpg`
+          )
+        }
+      })
+    },
+    ondelWish(i) {
+      this.wishList.splice(i, 1)
+    },
     onClick() {},
     toWeChat() {
-      this.$router.push("search");
+      this.$router.push('search')
     },
     clickon(e) {
-      console.log(e);
+      console.log(e)
+      if (e === 1) {
+        this.rankshow = true
+      } else if (e === 2) {
+        this.show = true
+      }
     },
     onFocus() {
-      this.$router.push("search");
+      this.$router.push('search')
     },
+    // 分享url
+    // `${window.location}?` sendUnionid  userinfo   wishList
     onShare() {
       this.shareshow = !this.shareshow
+      const userinfo = this.userinfo
+      const obj = {
+        unionid: this.storage.get('unionId'),
+        wish: this.wishList.join(','),
+        headportraitUrl: userinfo.headimgurl,
+        region: userinfo.country + userinfo.province + userinfo.city,
+        nickname: userinfo.nickname,
+        sex: userinfo.sex
+      }
+      this.$api.post(config.insertMyWish, { ...obj }).then(res => {
+        if (res.status === 'success') {
+          console.log(res.data)
+        }
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -61,7 +124,7 @@ export default {
   height: 100%;
   width: 100%;
   overflow: auto;
-  background: url("../assets/bg/bg-line44.png") repeat center;
+  background: url('../assets/bg/bg-line44.png') repeat center;
   background-size: 100%;
   &-header {
     position: absolute;
@@ -136,7 +199,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 100px;
-    background: url("../assets/bg/footer.gif") repeat center;
+    background: url('../assets/bg/footer.gif') repeat center;
     background-size: 100% 100%;
   }
 }

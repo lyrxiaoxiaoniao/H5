@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <div class="search-top">
-      <input type="text" placeholder="可以输入你的愿望清单哦">
+      <input v-model="inputVal" maxlength="10" @keyup.enter="onAddTags" type="text" placeholder="可以输入你的愿望清单哦(限10字)">
     </div>
     <div class="search-content">
       <div class="search-content-title">我的愿望清单</div>
@@ -14,28 +14,29 @@
           :class="item.checked?'red': ''"
         >{{item.value}}</span>
       </div>
-      <div class="search-btn">确定</div>
+      <div @click="onConfim" class="search-btn">确定</div>
     </div>
   </div>
 </template>
 
 <script>
+import config from '../utils//config/index'
 export default {
-  name: "search",
+  name: 'search',
   data() {
     return {
       tags: [
-        { value: "桃花朵朵开", checked: false },
-        { value: "成功脱单", checked: false },
-        { value: "生个猪宝宝", checked: false },
-        { value: "来一场奋不顾身的爱情", checked: false },
-        { value: "和TA一起看日出", checked: false },
-        { value: "嫁给爱情", checked: false },
-        { value: "迎娶白富美", checked: false },
-        { value: "男神带回家", checked: false },
-        { value: "家庭幸福美满", checked: false },
-        { value: "父母不催婚", checked: false },
-        { value: "一场浪漫的烛光晚餐", checked: false },
+        // { value: "桃花朵朵开", checked: false },
+        // { value: "成功脱单", checked: false },
+        // { value: "生个猪宝宝", checked: false },
+        // { value: "来一场奋不顾身的爱情", checked: false },
+        // { value: "和TA一起看日出", checked: false },
+        // { value: "嫁给爱情", checked: false },
+        // { value: "迎娶白富美", checked: false },
+        // { value: "男神带回家", checked: false },
+        // { value: "家庭幸福美满", checked: false },
+        // { value: "父母不催婚", checked: false },
+        // { value: "一场浪漫的烛光晚餐", checked: false },
         // { value: "变瘦变美", checked: false },
         // { value: "颜值在线", checked: false },
         // { value: "学会化妆", checked: false },
@@ -44,19 +45,58 @@ export default {
         // { value: "练出马甲线", checked: false },
         // { value: "练出N块腹肌", checked: false },
         // { value: "涨10w粉丝", checked: false },
-        { value: "C位出道", checked: false }
+        // { value: "C位出道", checked: false }
       ],
-      isCheck: []
-    };
+      isCheck: [],
+      inputVal: ''
+    }
+  },
+  mounted() {
+    this.getWishList()
   },
   methods: {
+    getWishList() {
+      this.$api.get(config.getAllWishConfig).then(res => {
+        if (res.status === 'success') {
+          this.tags = res.data.map(v => {
+            return { value: v.wish, checked: false }
+          })
+        }
+      })
+    },
     onClickItem(e) {
-      this.tags[e.index].checked = !this.tags[e.index].checked;
-      this.isCheck = this.tags.filter(v => v.checked);
-      console.log(this.isCheck);
+      if (this.isCheck.length > 4) {
+        this.$pop({ msg: '限制4条愿望哦', align: 'top', delay: 2000 })
+      } else if (this.tags[e.index].checked || this.isCheck.length <= 4) {
+        this.tags[e.index].checked = !this.tags[e.index].checked
+        this.isCheck = this.tags.filter(v => v.checked)
+        if (this.isCheck.length === 4) {
+          this.$pop({ msg: '限制4条愿望哦', align: 'top', delay: 2000 })
+        }
+      }
+    },
+    onAddTags() {
+      const str = this.inputVal.replace(/\s*/g, '')
+      if (str.length === 0) return
+      if (this.isCheck.length === 4) {
+        this.$pop({ msg: '限制4条愿望哦', align: 'top', delay: 2000 })
+        return
+      }
+      this.isCheck.push({ value: this.inputVal, checked: true })
+      this.tags.unshift({ value: this.inputVal, checked: true })
+      this.inputVal = ''
+    },
+    onConfim() {
+      this.$router.replace({
+        path: '/form1',
+        query: {
+          list: this.isCheck.map(v => v.value),
+          isSelect: true
+        }
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -98,11 +138,12 @@ export default {
       margin-bottom: 10px;
     }
     &-list {
+      max-height: 230px;
       flex: 1;
       display: flex;
       justify-content: flex-start;
       flex-wrap: wrap;
-      overflow: hidden;
+      overflow: auto;
       .item {
         margin-right: 10px;
         margin-bottom: 10px;

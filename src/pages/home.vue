@@ -6,7 +6,7 @@
       <div class="content">
         <title-img></title-img>
         <head-img class="head-img"></head-img>
-        <text-list class="text-list"></text-list>
+        <text-list :list="wishList" class="text-list"></text-list>
       </div>
     </div>
     <red-btn
@@ -23,40 +23,66 @@
 </template>
 
 <script>
-import leftControl from "@c/left-control";
-import redBtn from "@c/red-btn";
-import headImg from "@c/head-img";
-import textList from "@c/text-list";
-import titleImg from "@c/title-img";
-import dialogGuize from "@c/dialog";
-import dialogRank from "@c/dialog-rank";
+import leftControl from '@c/left-control'
+import redBtn from '@c/red-btn'
+import headImg from '@c/head-img'
+import textList from '@c/text-list'
+import titleImg from '@c/title-img'
+import dialogGuize from '@c/dialog'
+import dialogRank from '@c/dialog-rank'
+// import config from '../utils/config';
 export default {
-  components: { leftControl, redBtn, headImg, textList, titleImg,dialogGuize, dialogRank },
+  components: {
+    leftControl,
+    redBtn,
+    headImg,
+    textList,
+    titleImg,
+    dialogGuize,
+    dialogRank
+  },
   data() {
     return {
+      query: this.$route.query,
       show: false,
       rankshow: false
-    };
+    }
   },
   computed: {
     isIphonex() {
-      const height = document.body.offsetHeight;
-      return height > 700;
+      const height = document.body.offsetHeight
+      return height > 700
+    },
+    wishList() {
+      return this.$route.query.wishList.split(',')
     }
   },
   mounted() {
-    console.log(document.body.offsetHeight);
+    console.log(document.body.offsetHeight)
   },
   methods: {
-    onClick() {},
-    toWeChat() {
-      this.$router.push("search");
+    onClick() {
+      console.log(11111)
+      this.$router.push({
+        path: '/forward1',
+        query: {
+          isAlldone: 1
+        }
+      })
     },
-    clickon() {
-      console.log(12312312);
+    toWeChat() {
+      this.$router.push('search')
+    },
+    clickon(e) {
+      console.log(e, 12312312)
+      if (e === 1) {
+        this.rankshow = true
+      } else if (e === 2) {
+        this.show = true
+      }
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -65,7 +91,7 @@ export default {
   height: 100%;
   width: 100%;
   overflow: auto;
-  background: url("../assets/bg/bg-lline.png") repeat center;
+  background: url('../assets/bg/bg-lline.png') repeat center;
   background-size: 100%;
   &-header {
     position: absolute;
@@ -131,7 +157,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 100px;
-    background: url("../assets/bg/footer.gif") repeat center;
+    background: url('../assets/bg/footer.gif') repeat center;
     background-size: 100% 100%;
   }
 }

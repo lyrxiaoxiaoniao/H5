@@ -8,7 +8,7 @@
       :style="colors[index]"
     >
       {{item}}
-      <i>x</i>
+      <i @click="onClose(index)">x</i>
     </div>
   </div>
 </template>
@@ -19,11 +19,15 @@ export default {
     close: {
       type: Boolean,
       default: false
+    },
+    list: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      list: ["才值爆华横溢", "颜爆表值爆表", "找到真爱", "合彩中六合彩"],
+      // list: ["才值爆华横溢", "颜爆表值爆表", "找到真爱", "合彩中六合彩"],
       colors: [
         { backgroundColor: "#FF4791" },
         { backgroundColor: "#FFB347" },
@@ -31,6 +35,11 @@ export default {
         { backgroundColor: "#B847FF" }
       ]
     };
+  },
+  methods: {
+    onClose(index) {
+      this.$emit('onClose', index)
+    }
   }
 };
 </script>
