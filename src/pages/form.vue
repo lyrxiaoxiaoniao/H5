@@ -63,12 +63,21 @@ export default {
               return v.wish
             }
           })
+          const { headimgurl, nickname } = this.userinfo
           const shareUrl = `${
             location.origin
-          }/#/?sendUnionid=${this.storage.get('unionId')}&userinfo=${
-            JSON.stringify(this.userinfo)
-          }&wishList=${this.wishList}`
+          }/#/?sendUnionid=${this.storage.get(
+            'unionId'
+          )}&nickname=${nickname}&headimgurl=${headimgurl}&wishList=${
+            this.wishList
+          }`
+          const url = `https://www.jpark.vip/lucky/redpack/#/?sendUnionid=${this.storage.get(
+            'unionId'
+          )}&nickname=${nickname}&headimgurl=${headimgurl}&wishList=${
+            this.wishList
+          }`
           $wx.shareFriend(
+            url,
             '锦鲤活动标题',
             '锦鲤活动描述',
             shareUrl,

@@ -5,7 +5,7 @@
     <div class="home-container" :class="isIphonex?'top300': ''">
       <div class="content">
         <title-img></title-img>
-        <head-img class="head-img"></head-img>
+        <head-img :img="query.headimgurl" :nickname="query.nickname" class="head-img"></head-img>
         <text-list :list="wishList" class="text-list"></text-list>
       </div>
     </div>

@@ -1,7 +1,6 @@
 <template>
   <div class="home">
-    <div @click.self="toWeChat" class="home-header"></div>
-    <left-control @onClick="clickon" class="leftcrol"></left-control>
+    <div class="home-header"></div>
     <div class="home-container">
       <div class="content">
         <title-img isred class="title-img"></title-img>
@@ -18,35 +17,27 @@
       <div class='redbtn mr-20' @click="onClickposter">生成海报</div>
       <div class='redbtn ml-20' @click="onClick">转发集福</div>
     </div> -->
+    <!-- <div id="qrcode" ref="qrcode"></div> -->
     <img class="home-bg" src="../assets/bg/bg22.png" alt>
     <div class="home-footer"></div>
-    <dialog-guize :show.sync="show"></dialog-guize>
-    <dialog-rank :visiable.sync="rankshow"></dialog-rank>
-    <share :shareshow.sync="shareshow"></share>
   </div>
 </template>
 
 <script>
-import leftControl from '@c/left-control'
 import redBtn from '@c/red-btn'
 import headImg from '@c/head-img'
 import textList from '@c/text-list'
 import titleImg from '@c/title-img'
-import dialogGuize from '@c/dialog'
-import dialogRank from '@c/dialog-rank'
-import share from '@c/share'
 import config from '../utils/config/index'
 import $wx from '../utils//wx'
+import QRCode from 'qrcodejs2'
+import html2canvas from 'html2canvas'
 export default {
   components: {
-    leftControl,
     redBtn,
     headImg,
     textList,
-    titleImg,
-    dialogGuize,
-    share,
-    dialogRank
+    titleImg
   },
   data() {
     return {
@@ -54,20 +45,34 @@ export default {
       userinfo: this.storage.get('userinfo'),
       packet: {},
       resData: {},
-      wishList: [],
-      isDone: false,
-      shareshow: false,
-      show: false,
-      rankshow: false
+      wishList: []
     }
   },
   mounted() {
     console.log(document.body.offsetHeight)
     this.getWishList()
+    // this.$nextTick(() => {
+    //   this.qrcode()
+    // })
   },
   methods: {
     // 分享url
     // `${window.location}?` sendUnionid  userinfo wishList
+    getPoster() {
+      html2canvas(document.querySelector("#capture"), {
+          scale: 2,
+          // logging: false
+      }).then(canvas => {
+          el.appendChild(canvas)
+      });
+    },
+    qrcode() {
+      let qrcode = new QRCode('qrcode', {
+        width: 80, // 设置宽度，单位像素
+        height: 80, // 设置高度，单位像素
+        text: 'https://www.baidu.com' // 设置二维码内容或跳转地址
+      })
+    },
     getWishList() {
       this.$api
         .get(config.isSendWishOrGetpacket, {
@@ -83,17 +88,16 @@ export default {
               const {headimgurl,nickname} = this.userinfo
               const shareUrl = `${
                 location.origin
-              }#/?sendUnionid=${this.storage.get(
+              }/#/?sendUnionid=${this.storage.get(
                 'unionId'
               )}&nickname=${nickname}&headimgurl=${headimgurl}&wishList=${
                 this.wishList
               }`
-              const url = window.location.href.split('#')[0]
-              // const paramUrl = `/#/?sendUnionid=${this.storage.get(
-              //   'unionId'
-              // )}&nickname=${nickname}&headimgurl=${headimgurl}&wishList=${
-              //   this.wishList
-              // }`
+              const url = `https://www.jpark.vip/lucky/redpack/#/?sendUnionid=${this.storage.get(
+                'unionId'
+              )}&nickname=${nickname}&headimgurl=${headimgurl}&wishList=${
+                this.wishList
+              }`
               $wx.shareFriend(
                 url,
                 '锦鲤活动标题',
@@ -114,23 +118,7 @@ export default {
         this.shareshow = !this.shareshow
       }
     },
-    onClickposter() {
-      this.$router.push({
-        path: '/poster',
-        query: {...this.query}
-      })
-    },
-    toWeChat() {
-      this.$router.push('search')
-    },
-    clickon(e) {
-      console.log(e, 12312312)
-      if (e === 1) {
-        this.rankshow = true
-      } else if (e === 2) {
-        this.show = true
-      }
-    }
+    onClickposter() {}
   }
 }
 </script>

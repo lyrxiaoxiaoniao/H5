@@ -2,14 +2,14 @@
   <div v-if="visiable" class="rank">
     <div class="rank-center">
       <div class="rank-center-content">
-        <div class="item">
-          <!-- <div class="item-img default">4</div> -->
-          <div class="item-img one"></div>
-          <!-- <div class="item-img two"></div> -->
-          <!-- <div class="item-img three"></div> -->
-          <img class="item-avator" src="http://placehold.it/30x30/fff/ccc.png">
-          <div class="item-text">梦想在哪儿</div>
-          <div class="item-piao">159999票</div>
+        <div v-for="(item,index) in rankList" :key="index" class="item">
+          <div v-if="index == 0" class="item-img one"></div>
+          <div v-if="index == 1" class="item-img two"></div>
+          <div v-if="index == 2" class="item-img three"></div>
+          <div v-if="index > 2" class="item-img default">{{index}}</div>
+          <img class="item-avator" :src="item.headportraitUrl || require('../../../public/share.jpg')">
+          <div class="item-text">{{item.nickname || ''}}</div>
+          <div class="item-piao">{{item.likeCount}}票</div>
         </div>
       </div>
       <div @click="onCloneRank" class="rank-center-close"></div>
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import config from '../../utils/config/index'
 export default {
   props: {
     visiable: {
@@ -26,9 +27,25 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      rankList: []
+    };
+  },
+  watch: {
+    visiable(newVal, oldVal) {
+      console.log(newVal)
+      this.getRankList()
+    }
   },
   methods: {
+    getRankList() {
+      this.$api.get(config.getRanking).then(res => {
+        if(res.status === 'success'){
+          console.log(res)
+          this.rankList = res.data
+        }
+      })
+    },
     onCloneRank() {
       this.$emit("update:visiable", false);
     }

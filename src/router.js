@@ -61,6 +61,14 @@ export default new Router({
         index: 7
       },
       component: () => import('./pages/form.vue')
+    },
+    {
+      path: '/poster',
+      name: 'poster',
+      meta: {
+        index: 7
+      },
+      component: () => import('./pages/poster.vue')
     }
   ]
 })

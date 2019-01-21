@@ -1,7 +1,7 @@
 <template>
   <div v-show="isshowpage" class="home">
     <div @click.self="toWeChat" class="home-header"></div>
-    <left-control @onClick="clickon" class="leftcrol"></left-control>
+    <left-control @onClick="clickon" islike :isDone="like?true:false" class="leftcrol"></left-control>
     <div class="home-container">
       <div class="content">
         <title-img></title-img>
@@ -44,7 +44,9 @@ export default {
       rankshow: false,
       isshowpage: false,
       isGetPacket: false, // 是否拆红包
-      isWish: false // 是否许愿
+      isWish: false, // 是否许愿
+      likeCount: undefined,
+      like: 0
     }
   },
   computed: {
@@ -55,7 +57,9 @@ export default {
   },
   created() {
     // console.log(this.sendUnionid === this.storage.get('unionId'))
-    this.isChoose()
+    if (this.storage.get('unionId')) {
+      this.isChoose()
+    }
   },
   mounted() {
     // console.log(document.body.offsetHeight)
@@ -82,7 +86,7 @@ export default {
                   path: '/forward1',
                   query: {
                     ...wishList,
-                    isAlldone: 1
+                    isAlldone: 0
                   }
                 })
               } else if (this.isGetPacket && this.isWish) {
@@ -91,7 +95,7 @@ export default {
                   path: '/forward1',
                   query: {
                     ...wishList,
-                    isAlldone: 0
+                    isAlldone: 1
                   }
                 })
               } else if (!this.isGetPacket && this.isWish) {
@@ -118,11 +122,16 @@ export default {
     },
     getData() {
       this.$api
-        .get(config.getRedPacket, { sendUnionid: this.sendUnionid })
+        .get(config.getRedPacket, {
+          sendUnionid: this.sendUnionid,
+          unionid: this.storage.get('unionId')
+        })
         .then(res => {
           if (res.status === 'success') {
             this.wishList = res.data.wishList.split(',')
             this.wishId = res.data.id
+            this.likeCount = res.data.likeCount
+            this.like = res.data.like
           }
         })
     },
@@ -158,6 +167,8 @@ export default {
         .then(res => {
           if (res.status === 'success') {
             console.log(res, '点赞')
+            this.likeCount = res.data.likeCount
+            this.like = res.data.like
           }
         })
     }

@@ -1,5 +1,5 @@
-// const base_url = 'https://www.jpark.vip/jf-jpark-app-web-api'
-const base_url = 'http://192.168.40.79:8080/jf-jpark-app-web-api'
+const base_url = 'https://www.jpark.vip/jf-jpark-app-web-api'
+// const base_url = 'http://192.168.40.79:8080/jf-jpark-app-web-api'
 
 export default {
   baseserverURI: base_url,
@@ -18,5 +18,9 @@ export default {
   // 点赞
   insertLike: `${base_url}/redPacket/insertLike`,
   // 判断是否拆红包，是否许愿 ?unionid=olDWz0n_5r2NFHSUyPfrYh4_cMG4
-  isSendWishOrGetpacket: `${base_url}/redPacket/isSendWishOrGetpacket`
+  isSendWishOrGetpacket: `${base_url}/redPacket/isSendWishOrGetpacket`,
+  // 判断是否拆红包，是否许愿 ?unionid=olDWz0n_5r2NFHSUyPfrYh4_cMG4
+  getShareSign: `${base_url}/redPacket/getShareSign`,
+  // 获取排行榜
+  getRanking: `${base_url}/redPacket/getRanking`
 }
